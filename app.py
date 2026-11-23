@@ -15,6 +15,7 @@ from recommendation_engine import RECOMMENDATIONS, generate_recommendations
 from risk_engine import calculate_risk
 
 app = Flask(__name__)
+DEMO_MODE = os.environ.get("DEMO_MODE", "false").lower() == "true"
 DATABASE_PATH = os.path.join(app.root_path, "database", "cybershield.db")
 os.makedirs(os.path.dirname(DATABASE_PATH), exist_ok=True)
 
@@ -87,7 +88,7 @@ def calculate_risk_api():
         result = calculate_risk(data)
         result["recommendations"] = generate_recommendations(result)
 
-        if request.args.get("save", "1") == "1":
+        if not DEMO_MODE and request.args.get("save", "1") == "1":
             with closing(sqlite3.connect(DATABASE_PATH)) as connection:
                 with connection:
                     connection.execute("""
@@ -116,22 +117,28 @@ def phishing_quiz_api():
             {"id": q["id"], "question": q["question"], "options": q["options"]}
             for q in QUESTIONS
         ])
+
     try:
         data = request.get_json(silent=True)
         if not isinstance(data, dict):
             return jsonify({"error": "Invalid quiz data"}), 400
+
         result = evaluate_quiz(data.get("answers"))
-        with closing(sqlite3.connect(DATABASE_PATH)) as connection:
-            with connection:
-                connection.execute("""
-                    INSERT INTO quiz_results
-                    (score, total, percentage, awareness_level, created_at)
-                    VALUES (?, ?, ?, ?, ?)
-                """, (
-                    result["score"], result["total"], result["percentage"],
-                    result["awareness_level"], datetime.now().isoformat()
-                ))
+
+        if not DEMO_MODE:
+            with closing(sqlite3.connect(DATABASE_PATH)) as connection:
+                with connection:
+                    connection.execute("""
+                        INSERT INTO quiz_results
+                        (score, total, percentage, awareness_level, created_at)
+                        VALUES (?, ?, ?, ?, ?)
+                    """, (
+                        result["score"], result["total"], result["percentage"],
+                        result["awareness_level"], datetime.now().isoformat()
+                    ))
+
         return jsonify(result)
+
     except ValueError as error:
         return jsonify({"error": str(error)}), 400
     except Exception:
@@ -213,7 +220,17 @@ def download_report():
     except Exception:
         app.logger.exception("Report generation failed")
         return jsonify({"error": "Unable to generate report"}), 500
+@app.before_request
+def protect_demo_data():
+    if DEMO_MODE and request.path in (
+        "/dashboard",
+        "/api/dashboard",
+        "/download-report"
+    ):
+        return jsonify({
+            "message": "This feature is disabled in public demo mode to protect assessment data."
+        }), 403
 
-
+    
 if __name__ == "__main__":
     app.run(debug=False)
