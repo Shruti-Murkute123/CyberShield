@@ -1,0 +1,35 @@
+# Python
+venv/
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Credentials and configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Databases
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Private data
+private_data/
+uploads/
+user_data/
+reports/
+
+# Temporary files
+*.log
+*.tmp
+
+# Editor files
+.vscode/
+.idea/

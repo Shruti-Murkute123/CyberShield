@@ -1,0 +1,38 @@
+
+{% extends "base.html" %}
+
+{% block title %}CyberShield | Phishing Awareness{% endblock %}
+
+{% block content %}
+
+<section class="page-container">
+
+    <h1>Phishing Awareness Quiz</h1>
+
+    <p class="subtitle">
+        Test your ability to identify suspicious emails
+        and common online threats.
+    </p>
+
+    <div class="quiz-intro">
+        <h2>Think Before You Click!</h2>
+        <p>
+            Read each situation carefully and select
+            the safest response.
+        </p>
+        <p class="notice">
+            This educational quiz contains 5 questions.
+        </p>
+    </div>
+
+    <div id="quizContainer">
+        <p>Loading quiz...</p>
+    </div>
+
+    <div id="quizResult"></div>
+
+</section>
+
+<script src="{{ url_for('static', filename='js/phishing.js') }}"></script>
+
+{% endblock %}

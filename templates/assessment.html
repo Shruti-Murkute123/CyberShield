@@ -1,0 +1,47 @@
+
+{% extends "base.html" %}
+
+{% block title %}CyberShield | Assessment{% endblock %}
+
+{% block content %}
+
+<section class="page-container">
+
+    <h1>Cybersecurity Assessment</h1>
+
+    <p class="subtitle">
+        Evaluate your organization's cybersecurity practices.
+    </p>
+
+    <div class="assessment-intro">
+        <h2>Business Security Evaluation</h2>
+        <p>
+            Answer all 15 questions honestly to evaluate
+            your business's current security readiness.
+        </p>
+        <p class="notice">
+            This is a preliminary educational assessment,
+            not a professional security audit.
+        </p>
+    </div>
+
+    <form id="securityForm">
+
+        <div id="questionsContainer"></div>
+
+        <div class="assessment-actions">
+            <button type="submit" class="btn-primary">
+                Submit Assessment →
+            </button>
+            <button type="reset" class="btn-secondary">
+                Reset Answers
+            </button>
+        </div>
+
+    </form>
+
+    <div id="formMessage"></div>
+
+</section>
+
+{% endblock %}

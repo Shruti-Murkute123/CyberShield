@@ -1,0 +1,31 @@
+
+{% extends "base.html" %}
+
+{% block title %}CyberShield | Recommendations{% endblock %}
+
+{% block content %}
+
+<section class="page-container">
+
+    <h1>Security Recommendations</h1>
+
+    <p class="subtitle">
+        Personalized security improvements based on
+        your cybersecurity assessment.
+    </p>
+
+    <div id="recommendationSummary"></div>
+
+    <div id="recommendationsContainer"></div>
+
+    <div class="assessment-actions">
+        <a href="/assessment" class="btn-primary">
+            Take Assessment
+        </a>
+    </div>
+
+</section>
+
+<script src="{{ url_for('static', filename='js/recommendations.js') }}"></script>
+
+{% endblock %}
